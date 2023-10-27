@@ -1,8 +1,7 @@
-import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { updateTask } from "../features/tasks/taskSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { updateTask, getOneTask } from "../features/tasks/taskSlice";
 
 const EditTask = () => {
   const { id } = useParams();
@@ -11,13 +10,12 @@ const EditTask = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { taskById } = useSelector((state) => state.tasks);
 
   const fetchTask = async () => {
-    try {
-      const response = await axios.get(`/api/task/getTaskbyId/${id}`);
-      setTitle(response.data.title);
-      setDescription(response.data.description);
-    } catch (error) {}
+    dispatch(getOneTask(id));
+    setTitle(taskById.title);
+    setDescription(taskById.description);
   };
 
   useEffect(() => {
