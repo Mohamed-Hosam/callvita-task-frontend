@@ -1,50 +1,31 @@
-import axios from "axios";
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { createTask } from "../features/tasks/taskSlice";
 
-const EditTask = () => {
-  const { id } = useParams();
+const CreateTaskPage = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const fetchTask = async () => {
-    try {
-      const response = await axios.get(`/api/task/${id}`);
-      console.log(response.data);
-      setTitle(response.data.title);
-      setDescription(response.data.description);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchTask();
-  }, [id]);
-
-  const editTask = async (e) => {
+  const createNewTask = async (e) => {
     e.preventDefault();
-    try {
-      const res = await axios.put(`/api/task/${id}`, {
+    dispatch(
+      createTask({
         title,
         description,
-      });
-      const data = res.data;
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      navigate("/");
-    }
+      })
+    );
+    navigate("/");
   };
 
   return (
     <div>
-      <h3>Edit Task</h3>
+      <h3>Create Task</h3>
       <div className="w-25 m-auto mt-5">
-        <form onSubmit={editTask}>
+        <form onSubmit={createNewTask}>
           <div className="form-group mb-3">
             <input
               type="text"
@@ -78,4 +59,4 @@ const EditTask = () => {
   );
 };
 
-export default EditTask;
+export default CreateTaskPage;
